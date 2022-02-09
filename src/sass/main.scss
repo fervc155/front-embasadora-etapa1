@@ -1,0 +1,31 @@
+@import "./vuestic-sass";
+@import "./icon-fonts";
+
+
+.pointer{
+	cursor: pointer;
+}
+
+.w-100{
+	width: 100%;
+}
+
+.va-card{
+	margin-bottom:1rem;
+}
+
+td.no-data{
+	padding-top: 10px;
+}
+
+.va-medium-editor{
+    border: 2px solid gray;
+    padding: 1rem;
+    border-radius: 4px;
+    border-style: dashed;
+    width: 100%;
+}
+
+.va-card__title{
+	font-size: 0.8rem;
+}

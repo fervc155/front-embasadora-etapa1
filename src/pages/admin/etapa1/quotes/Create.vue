@@ -1,0 +1,219 @@
+<template>
+  <va-card>
+   <va-card-title>Crear cotizacion</va-card-title>
+    <va-card-content>
+       <va-input class="mb-4" type="textarea" autosize v-model="quote.header" label="Encabezado" />
+
+       <va-input class="mb-4"   v-model="quote.title" label="Titulo de la cotizacion" />
+       <div class="row">
+                  <div class="flex md6">
+
+       <va-input   v-model="quote.client" label="Nombre del cliente" />
+</div>
+          <div class="flex md6">
+
+       <va-input  type="email"  v-model="quote.email" label="Email de destino" />
+</div>
+          <div class="flex md6">
+              <va-input class="mb-4" type="date"  v-model="quote.start_validity" label="Comienzo Fecha de validez" />
+
+         </div>
+
+         <div class="flex md6">
+                  <va-input class="mb-4" type="date"  v-model="quote.end_validity" label="Fin Fecha de validez" />
+         </div>
+       </div>
+
+
+        <div class="row">
+          <div class="flex md6">
+              <va-input class="mb-4" v-model="product.name" label="Producto" />
+          </div>
+          <div class="flex md2">
+              <va-input class="mb-4" v-model="product.iva" label="% IVA" />
+          </div>
+          <div class="flex md2">
+              <va-input class="mb-4" type="number"  v-model="product.price" label="Precio del producto" />
+          </div>
+          <div class="flex md2">
+              <va-input class="mb-4" type="number"  v-model="product.count" label="Cantidad" />
+          </div>
+        </div>
+          <div class="text-right">
+              <va-button @click="addProduct()" >Agregar producto</va-button>
+ 
+        </div>
+            <div class="va-table-responsive  mb-5">
+    <table class="va-table w-100">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>precio</th>
+          <th>cantidad</th>
+          <th>Iva incluido</th>
+          <th>subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr  v-for="(product_quote,index) in (quote.content)">
+          <td>{{product_quote.name}}</td>
+          <td>${{product_quote.price}}</td>
+          <td>{{product_quote.count}}</td>
+          <td>${{product_quote.total * product_quote.iva / 100}}</td>
+          <td>${{product_quote.total}}</td>
+          <td  class="pointer">
+          <va-icon @click="editProduct(index)"  color="primary" name="pencil"/>
+            <va-icon @click="removeProduct(index)"  color="danger" name="trash"/></td>
+        </tr>
+        <tr><td></td><td ></td><td></td><td>IVA: <span class="iva">${{iva}}</span></td><td>Total: <span class="total">${{total}}</span></td></tr>
+        <tr v-if="quote.content.length==0"><td>Sin contenido</td></tr>
+      </tbody>
+    </table>
+  </div>
+        <va-input class="mb-4" type="textarea" autosize v-model="quote.first_footer" label="Primer pie de pagina" />
+        <va-input class="mb-4" type="textarea" autosize v-model="quote.second_footer" label="Segundo pie de pagina" />
+
+ 
+  <va-button @click="submit()">Crear cotizacion</va-button>
+     </va-card-content>
+  </va-card>
+</template>
+
+
+<script>
+import {authAxios} from '@/config/axios';
+import Swal from 'sweetalert2';
+import {print_error_validate,error_500} from '@/helpers';
+
+import VaMediumEditor from '@/components/va-medium-editor/va-medium-editor'
+
+  
+export default {
+  name: 'create',
+  components: {
+    VaMediumEditor
+  },
+  data () {
+    return {
+      quote:{header:'MARTIN IGNACIO SOLIS CRUZ | RFC: SOCM741122SJ7 AV. DEL SOL MZA 3, SMZA 45, LTE 9 CANCÚNQ. ROO MÉXICO CP: 77506',
+      start_validity:'',
+      end_validity:'',
+      client:'',
+      email:'',
+      title:'',
+      first_footer:"Para iniciar la producción se requiere un 50% de anticipo sobre el costo total del pedido. Incluye formulación personalizada. En el apartado de cantidades, son las mínimas a solicitar. No incluye IVA y envío. Incluye Tamizaje, Certificado de Bioseguridad",
+      second_footer:"Contamos con 3, 6 y hasta 12 MSI. Aplica únicamente con tarjeta de crédito, Visa y Master Card",
+      content:[],
+
+    },
+      product:{name:'',count:1,total:"",price:"",iva:16},
+
+      editor:{},
+    }
+  },
+    mounted () {
+      let answer_id = this.$route.params.answer_id;
+      if(answer_id>0){
+
+        authAxios.get('answers/'+answer_id).then(res=>{
+          res= res.data.data;
+          let answers= JSON.parse(res.answers)
+
+          this.quote.client = answers.group_information.content.name.answer;
+          this.quote.email = answers.group_information.content.email.answer;
+        }).catch(error=>{
+          console.log(error)
+        })
+      }
+ 
+  },
+
+  computed:{
+    total : function(){
+      let total =0;
+      this.quote.content.map((product)=>{
+        total+=Number(product.price);
+      })
+
+      return total;
+    },
+    iva : function(){
+      let iva =0;
+      this.quote.content.map((product)=>{
+        iva+=Number(product.price * (product.iva/100));
+      })
+
+      return iva;
+    }
+  },
+  methods: {
+
+    addProduct(){
+      if(this.product.name.trim().length>1 &&
+       this.product.count>0
+        && this.product.price>0){
+        this.product.total = this.product.price * this.product.count;
+
+        let find=false;
+        this.quote.content =this.quote.content.map((product)=>{
+          if(product.name == this.product.name)
+          {
+            product = this.product;
+            find=true;
+          }
+
+          return product;
+        })
+
+ 
+        if(!find){
+          this.quote.content.push(this.product);
+        }
+        this.product={name:'',count:1,total:"",iva:16,price:""};
+
+      }
+    },
+
+    removeProduct(index){
+
+      this.quote.content =this.quote.content.filter((product,i)=>{
+        return i!=index;
+
+      })
+
+    },
+    editProduct(index){
+      this.product =JSON.parse(JSON.stringify(this.quote.content[index]));
+    },
+
+     submit(){
+      let quote = JSON.parse(JSON.stringify(this.quote))
+      quote.content = JSON.stringify(quote.content);
+      console.log(quote)
+      authAxios.post('/quotes',quote).then((res)=>{
+      return this.$router.push({ name: 'cotizaciones' })
+      }).catch((error)=>{
+        if(error.response.status==422){
+          print_error_validate(error,this);
+          return;
+        }
+        error_500(this);
+
+      })
+    }
+   
+  },
+}
+  
+
+
+ 
+</script>
+
+<style>
+  .total{
+    font-size: 30px;
+    font-weight: bold;
+  }
+</style>

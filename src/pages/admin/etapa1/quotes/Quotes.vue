@@ -1,0 +1,85 @@
+<template>
+  <va-card>
+   <va-card-title>Cotizaciones</va-card-title>
+    <va-card-content>
+      <va-chip class="mb-2 mr-2" to="cotizaciones/crear" color="primary">Crear cotizacion</va-chip>
+      <data-table :items="quotes"
+        :show="false"
+        :edit="false"
+        :drop="drop"
+        download="quotes"
+      ></data-table>
+  
+ 
+    </va-card-content>
+  </va-card>
+</template>
+
+<script>
+import {authAxios} from '@/config/axios';
+import DataTable from '@/components/table/DataTable.vue';
+import Swal from 'sweetalert2';
+import moment from 'moment';
+
+  
+export default {
+  name: 'quotes',
+  components:{DataTable},
+  data () {
+    return {
+      quotes:[],
+      drop:(id,options)=>{
+        Swal.fire({
+          title: 'Eliminar Registro',
+          showDenyButton: true,
+          confirmButtonText: 'Borrar',
+          denyButtonText: `Cancelar`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            authAxios.delete('/quotes/'+id).then((res)=>{
+              this.quotes = this.quotes.filter((quote)=>{
+                return quote.ID!=id;
+             })
+            }).catch(error=>{
+              console.error(error);
+            })
+          }
+        })
+
+       
+      }
+
+
+    }
+  },
+    mounted () {
+    authAxios.get('/quotes').then((res)=>{
+      this.quotes= res.data.data.map((quote)=>{
+        return {
+          No_cotizacion:quote.id,
+          Titulo:quote.title,
+          Cliente:quote.client,
+          Email:quote.email,
+          Fecha_de_creacion:moment(quote.created_at).format('D-MM-Y'),
+          Validez:moment(quote.start_validity).format('D-MM-Y')+"-"+moment(quote.end_validity).format('D-MM-Y'),
+          
+          Opciones:quote.id
+        }
+      })
+    }).catch(error=>{
+      console.error(error);
+    })
+ 
+  },
+  methods: {
+
+  }
+  
+
+}
+  
+</script>
+
+<style>
+  
+</style>
