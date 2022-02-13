@@ -18,7 +18,7 @@
     </template>
     <va-dropdown-content class="profile-dropdown__content">
       <va-list-item>
-        <router-link to="/admin/profile">Perfil</router-link>
+        <router-link :to="profileUrl()">Perfil</router-link>
         <span @click="logout()">Salir</span>
 
 
@@ -50,6 +50,9 @@ export default {
 
 
     },
+    profileUrl(){
+      return '/admin/usuarios/'+Token.json().user.id;
+    }
 
   },
   computed: {

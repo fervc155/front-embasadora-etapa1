@@ -27,19 +27,21 @@ export default {
           displayName: 'Cuestionarios',
         },
         {
-          name: 'clientes',
-          auth:['senior','hostess','clouser'],
-
-          displayName: 'Clientes',
-        },
-        {
           name: 'cotizaciones',
-          auth:['senior','hostess','clouser'],
+          auth:['senior','hostess'],
           displayName: 'Cotizaciones',
         },
       ],
     },
-     {
+    {
+      name: 'clientes',
+      auth:['senior','hostess','clouser'],
+      displayName: 'Clientes',
+      meta: {
+        icon: 'vuestic-iconset-user',
+      },
+    },
+    {
       name: 'usuarios',
       auth:['senior'],
       displayName: 'Usuarios',

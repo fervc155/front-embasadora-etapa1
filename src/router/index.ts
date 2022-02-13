@@ -85,14 +85,20 @@ const routes: Array<RouteRecordRaw> = [
       {
         name: 'cotizaciones',
         path: 'cotizaciones',
-        meta:{auth:['hostess','clouser','senior']},
+        meta:{auth:['hostess','senior']},
         component: () => import('@/pages/admin/etapa1/quotes/Quotes.vue'),
       },
         {
           name: 'crear-cotizacion',
           path: 'cotizaciones/crear/:answer_id?',
-          meta:{auth:['hostess','clouser','senior']},
+          meta:{auth:['hostess','senior']},
           component: () => import('@/pages/admin/etapa1/quotes/Create.vue'),
+        },       
+        {
+          name: 'ver-cotizacion',
+          path: 'cotizaciones/:id',
+          meta:{auth:['hostess','senior']},
+          component: () => import('@/pages/admin/etapa1/quotes/Show.vue'),
         },
 
       {
@@ -106,11 +112,17 @@ const routes: Array<RouteRecordRaw> = [
            path: 'usuarios/crear',
           meta:{auth:['senior']},
           component: () => import('@/pages/admin/users/Create.vue'),
+        },
+        {
+          name: 'ver-usuario',
+          path: 'usuarios/:id',
+          meta:{auth:['self','senior']},
+          component: () => import('@/pages/admin/users/Show.vue'),
         }, 
         {
           name: 'editar-usuarios',
           path: 'usuarios/editar/:id',
-          meta:{auth:['senior']},
+          meta:{auth:['self','senior']},
           component: () => import('@/pages/admin/users/Edit.vue'),
         },  
 
@@ -190,16 +202,19 @@ router.beforeEach((to, from, next) => {
    store.commit('setTokenDataMutation',tokenData)
   }
 
-  console.log(user);
-
-
-
   if(requireAuth){
     if(!user)
       return next({name:'login'})
 
+    if((requireAuth.includes('self')))
+      if(to.params.id == user.id)
+        return next();
+    
+
     if(requireAuth.includes(user.role) )
       return next();
+
+
 
     return next({name:'dashboard'})
 

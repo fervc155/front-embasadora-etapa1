@@ -4,7 +4,7 @@
     <va-card-content>
       <va-chip class="mb-2 mr-2" to="cotizaciones/crear" color="primary">Crear cotizacion</va-chip>
       <data-table :items="quotes"
-        :show="false"
+        show="cotizaciones/"
         :edit="false"
         :drop="drop"
         download="quotes"
@@ -57,8 +57,9 @@ export default {
       this.quotes= res.data.data.map((quote)=>{
         return {
           No_cotizacion:quote.id,
+          Estatus:quote.status.name,
           Titulo:quote.title,
-          Cliente:quote.client,
+          Cliente:quote.client_name,
           Email:quote.email,
           Fecha_de_creacion:moment(quote.created_at).format('D-MM-Y'),
           Validez:moment(quote.start_validity).format('D-MM-Y')+"-"+moment(quote.end_validity).format('D-MM-Y'),

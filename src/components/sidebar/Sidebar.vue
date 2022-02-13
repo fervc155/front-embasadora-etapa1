@@ -34,14 +34,6 @@ export default {
   },
   data() {
     return {
-      items: NavigationRoutes.routes.filter((route)=>{
-        let tokenData= Token.check();
-        let user = tokenData.user;
-        if(route.auth.includes(user.role) ){
-          return true;
-        }
-        return false;
-      }),
     };
   },
   computed: {
@@ -53,7 +45,33 @@ export default {
     colors() {
       return useGlobalConfig().getGlobalConfig().colors
     },
+    items(){
+      let routes =NavigationRoutes.routes;
+
+      let tokenData= Token.check();
+      let user = tokenData.user;
+      
+      routes = routes.map((route)=>{
+        if(route.auth.includes(user.role)){
+          if(route.children){
+            route.children =  route.children.map((child)=>{
+              if(child.auth.includes(user.role)){
+                return child;
+              }
+              return false;
+            }).filter(routechild=>(routechild));
+          }
+          return route;
+        }
+        return false;
+      }).filter(route=>(route));
+      return routes;
+    }
   },
+  methods:{
+
+   
+  }
 };
 </script>
 

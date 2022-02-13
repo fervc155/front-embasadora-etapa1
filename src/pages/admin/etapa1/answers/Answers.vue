@@ -2,15 +2,15 @@
   <va-card>
    <va-card-title>Cuestionarios reespondidos</va-card-title>
     <va-card-content>
-      <va-chip class="mb-2 mr-2" to="cuestionarios/crear-respuesta" color="primary">Contestar encuesta</va-chip>
+      <va-chip v-if="CanI('answers.create')" class="mb-2 mr-2" to="cuestionarios/crear-respuesta" color="primary">Contestar encuesta</va-chip>
       <data-table :items="answers"
         show="cuestionarios/"
-        edit="cuestionarios/editar/"
-        :drop="drop"
+        :edit="CanI('answers.edit','cuestionarios/editar/')"
+        :drop="CanI('answers.delete',drop)"
       ></data-table>
-  
  
     </va-card-content>
+
   </va-card>
 </template>
 
@@ -18,6 +18,7 @@
 import {authAxios} from '@/config/axios';
 import DataTable from '@/components/table/DataTable.vue';
 import Swal from 'sweetalert2';
+import {CanI} from '@/config/capabilities';
 
 import {answers_map} from'./_helpers';
 
@@ -27,6 +28,7 @@ export default {
   data () {
     return {
       answers:[],
+      CanI:CanI,
       drop:(id,options)=>{
 
         Swal.fire({
@@ -61,6 +63,8 @@ export default {
  
   },
   methods: {
+
+
 
   }
   

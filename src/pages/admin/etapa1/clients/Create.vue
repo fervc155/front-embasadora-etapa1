@@ -6,6 +6,7 @@
   <va-card>
     <va-card-title>Crear cliente</va-card-title>
   <va-card-content>
+
     <form-client v-bind:client="client" />
 
     <va-button size="medium"   v-on:click="submit()" class="mr-4 mt-4">Guardar cliente</va-button>
@@ -21,7 +22,7 @@ import FormClient from '@/pages/admin/etapa1/clients/FormClient.vue';
 export default {
   name: 'create',
 
-  props:['answer'],
+  props:['answer','modal'],
   components: {
     FormClient,
   },
@@ -46,6 +47,7 @@ export default {
       this.client.email = this.answer.answers.group_information.content.email.answer;
       this.client.whatsapp = this.answer.answers.group_information.content.whatsapp.answer;
       this.client.phone = this.answer.answers.group_information.content.phone.answer;
+      this.client.company = this.answer.answers.group_information.content.company.answer;
 
       let facebook_company = this.answer.answers.group_information.content.facebook_company.answer;
 
@@ -74,11 +76,10 @@ export default {
           denyButtonText: `Cancelar`,
         }).then((result) => {
           if (result.isConfirmed) {
-         
             let client = JSON.parse(JSON.stringify(this.client));
             client.social_networks = JSON.stringify(client.social_networks);
             authAxios.post('/clients',client).then((res)=>{
-              if(answer==null)
+              if(this.answer==null && this.modal==null)
                 return this.$router.push({ name: 'clientes' })
               else{
                 this.client ={name:'',email:'',whatsapp:'',phone:'', social_networks:{}}

@@ -1,6 +1,4 @@
 <template>
-
-
   <va-card>
    <va-card-title>Usuarios</va-card-title>
     <va-card-content>

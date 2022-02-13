@@ -17,13 +17,15 @@
         </div>
       </div>
     
-      <va-select label="selecciona un rol" v-model="user.role" :options="roles" />
+      <va-select v-if="AmI('senior')"  label="selecciona un rol" v-model="user.role" :options="roles" />
 
 
 </template>
 
 <script>
 import {authAxios} from '@/config/axios';
+import {AmI} from  '@/config/capabilities'
+
 
  
 export default {
@@ -31,6 +33,7 @@ export default {
   props:['user','edit'],
   data () {
     return {
+      AmI:AmI,
       roles:[],
 
 

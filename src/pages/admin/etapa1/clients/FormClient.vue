@@ -17,6 +17,9 @@
       <div class="flex md6 ">     
         <va-input  type="number" v-model="client.phone"  label="Telefono"/>
       </div>
+      <div class="flex md6 ">     
+        <va-input v-model="client.company"  label="Empresa"/>
+      </div>
     </div>
     <h3>Redes sociales</h3>
     <div class="row" >

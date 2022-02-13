@@ -17,6 +17,7 @@
       placeholder="Password"
       :error="!!passwordErrors.length"
       :error-messages="passwordErrors"
+      v-on:keyup.enter="onsubmit()"
     />
 
     <div class="auth-layout__options d-flex align--center justify--space-between">
@@ -24,7 +25,7 @@
     </div>
 
     <div class="d-flex justify--center mt-3">
-      <va-button @click="onsubmit()" class="my-0">Iniciar sesion</va-button>
+      <va-button :loading="loading" @click="onsubmit()" class="my-0">Iniciar sesion</va-button>
     </div>
   </form>
 </template>
@@ -44,6 +45,7 @@ export default {
       emailErrors: [],
       passwordErrors: [],
       $store:useStore(),
+      loading:false,
     }
   },
   setup(){
@@ -55,9 +57,11 @@ export default {
   },
   methods: {
     onsubmit () {
+      this.loading=true;
       this.emailErrors = this.email ? [] : ['El email es requerido']
       this.passwordErrors = this.password ? [] : ['El password es requerido']
       if (!this.formReady) {
+        this.loading=false;
         return
       }
 
@@ -73,6 +77,7 @@ export default {
         this.$router.push({name:'dashboard'})
         
       }).catch(error=>{
+          this.loading=false;
           this.$vaToast.init({
                 message: 'Tus claves de acceso son incorrectas',
                 iconClass: 'fas fa-times',

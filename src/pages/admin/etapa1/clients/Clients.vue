@@ -2,11 +2,11 @@
   <va-card>
     <va-card-title>Clientes</va-card-title>
     <va-card-content>
-      <va-chip class="mb-2 mr-2" to="clientes/crear" color="primary">Crear cliente</va-chip>
+      <va-chip v-if="CanI('clients.create')" class="mb-2 mr-2" to="clientes/crear" color="primary">Crear cliente</va-chip>
       <data-table :items="clients"
         show="clientes/"
-        edit="clientes/editar/"
-        :drop="drop"
+        :edit="CanI('clients.edit','clientes/editar/')"
+        :drop="CanI('clients.delete',drop)"
       ></data-table>
   
  
@@ -20,6 +20,8 @@
 import {authAxios} from '@/config/axios';
 import DataTable from '@/components/table/DataTable.vue';
 import Swal from 'sweetalert2';
+import {CanI} from '@/config/capabilities';
+
 
 export default {
   name: 'clients',
@@ -27,6 +29,7 @@ export default {
   data () {
     return {
       clients:[],
+      CanI:CanI,
       drop:(id,options)=>{
 
         Swal.fire({

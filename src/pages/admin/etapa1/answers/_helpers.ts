@@ -9,8 +9,8 @@ const answers_map=(answers:any)=>{
         Fecha:moment(res.created_at).format('D-MM-Y'),
         Estatus:res.status,
         Cliente: res.client==null? nombreEntrevistado : res.client.name,
-        Entrevistador:res.interviewer==null ? 'Sin asignar': res.interviewer.name,
-        Atiende:res.attend==null ? 'Sin asignar' : res.attend.name,
+        Hostess_entrevistador:res.interviewer==null ? 'Sin asignar': res.interviewer.name,
+        Clouser_asignado:res.attend==null ? 'Sin asignar' : res.attend.name,
         Opciones:res.id
       }
     });

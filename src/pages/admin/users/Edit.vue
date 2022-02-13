@@ -26,8 +26,9 @@ import {print_error_validate,error_500} from '@/helpers';
 
 import FormUser from './FormUser.vue';
 import ChangePassword from './ChangePassword.vue';
- 
+ import Swal from 'sweetalert2';
 
+         
 export default {
   name: 'create', 
   components:{FormUser,ChangePassword},
@@ -62,7 +63,11 @@ export default {
       let formData = new FormData();
 
       authAxios.put('/users/'+this.user.id,this.user).then((res)=>{
-        return this.$router.push({ name: 'usuarios' })
+        Swal.fire(
+                  'Exito',
+                  'Datos editados correctamente',
+                  'success'
+                )
       }).catch((error)=>{
         if(error.response.status==422){
           print_error_validate(error,this);

@@ -18,7 +18,7 @@
 
 
   <va-card>
-    <va-card-title>Entrevistar potenciales sin asignar</va-card-title>
+    <va-card-title>Entrevistas sin closer asignado</va-card-title>
       <va-card-content>
 
       <data-table :items="answersPotencial"
