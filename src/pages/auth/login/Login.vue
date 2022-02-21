@@ -8,6 +8,7 @@
       placeholder="Email"
       :error="!!emailErrors.length"
       :error-messages="emailErrors"
+      :label="emailLabel"
     />
 
     <va-input
@@ -18,6 +19,8 @@
       :error="!!passwordErrors.length"
       :error-messages="passwordErrors"
       v-on:keyup.enter="onsubmit()"
+      :label="passwordLabel"
+
     />
 
     <div class="auth-layout__options d-flex align--center justify--space-between">
@@ -25,7 +28,9 @@
     </div>
 
     <div class="d-flex justify--center mt-3">
-      <va-button :loading="loading" @click="onsubmit()" class="my-0">Iniciar sesion</va-button>
+
+      <va-button :loading="loading" :rounded="false"@click="onsubmit()" class="my-0">Iniciar sesion</va-button>
+
     </div>
   </form>
 </template>
@@ -53,6 +58,14 @@ export default {
   computed: {
     formReady () {
       return !this.emailErrors.length && !this.passwordErrors.length
+    },
+
+    emailLabel () {
+      return this.email ? 'email' : '' 
+    },
+
+    passwordLabel () {
+      return this.password ? 'password' : ''
     },
   },
   methods: {
@@ -95,3 +108,18 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+h1, .va-input__content-wrapper .va-input__content__input{
+  color: var(--va-gray2Dark);
+}
+.link:hover {
+  color: var(--va-darkGreen) !important;
+}
+.va-message-list{
+  padding: 0.25rem 0.5rem;
+}
+.va-input--solid .va-input__container{
+  border-color: var(--va-lightGray);
+}
+</style>
