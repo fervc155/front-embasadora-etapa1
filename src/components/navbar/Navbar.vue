@@ -9,8 +9,8 @@
             class="va-navbar__item"
             :color="colors.primary"
           />
-          <router-link to="/">
-            <logo class="logo"/>
+          <router-link to="/" style="width: 24px;">
+            <img src="/img/Formulabs_Gris.png">
           </router-link>          
         </div>
       </template>
@@ -31,12 +31,11 @@
 import { useColors } from 'vuestic-ui'
 import { useStore } from 'vuex'
 import { computed } from 'vue'
-import Logo from '@/components/Logo'
 import VaIconMenuCollapsed from '@/components/icons/VaIconMenuCollapsed'
 import AppNavbarActions from './components/AppNavbarActions'
 
 export default {
-  components: { Logo, AppNavbarActions, VaIconMenuCollapsed },
+  components: { AppNavbarActions, VaIconMenuCollapsed },
   setup() {
     const { getColors } = useColors()
     const colors = computed(() => getColors() )
@@ -61,6 +60,7 @@ export default {
   .va-navbar {
     box-shadow: var(--va-box-shadow);
     z-index: 2;
+    height: 5rem;
     &__center {
       @media screen and (max-width: 1200px) {
         .app-navbar__github-button {
@@ -106,5 +106,11 @@ export default {
     &:last-child {
       margin-right: 0;
     }
+  }
+  img {
+    width: 134px;
+    height: auto;
+    object-fit: cover;
+    object-position: -2px;
   }
 </style>

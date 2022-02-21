@@ -1,5 +1,5 @@
 <template>
-  <div class="app-layout" style="background-color:rgb(224 224 235);">
+  <div class="app-layout" style="background-color: var(--va-gray1Light);">
     <navbar />
     <div class="app-layout__content">
       <div class="app-layout__sidebar-wrapper" :class="{ minimized: isSidebarMinimized }">
@@ -106,7 +106,7 @@ $tabletBreakPointPX: 768px;
   display: flex;
   flex-direction: column;
   &__navbar {
-    min-height: 4rem;
+    min-height: 5rem;
   }
 
   &__content {
