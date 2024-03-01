@@ -1,6 +1,6 @@
 <template>
   <span v-if="show">
-    <router-link :to="show+id">
+    <router-link :to="'/admin/'+show+id">
       <va-icon
         name="eye"
         color="primary"
@@ -41,8 +41,8 @@
 </template>
 
 <script>
-import {Open} from '@/config/axios';
-import FileSaver from 'file-saver';
+import {downloadAxios} from '@/config/axios';
+import download from 'downloadjs'
 
 export default {
   name: 'data-table',
@@ -55,7 +55,10 @@ export default {
 
   methods: {
     onDownload(id){
-     Open('quotes/'+this.id+'/download');
+     downloadAxios.get('quotes/'+this.id+'/download').then(res=>{
+        const content = res.headers['content-type'];
+           download(res.data,'Cotizacion curioso', content)
+     });
     }
 
   }

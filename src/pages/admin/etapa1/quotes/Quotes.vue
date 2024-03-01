@@ -1,8 +1,8 @@
 <template>
   <va-card>
-   <va-card-title>Cotizaciones</va-card-title>
+   <va-card-title>Cotizaciones       <va-chip class="mb-2 mr-2" to="cotizaciones/crear" color="primary">Crear cotizacion</va-chip>
+</va-card-title>
     <va-card-content>
-      <va-chip class="mb-2 mr-2" to="cotizaciones/crear" color="primary">Crear cotizacion</va-chip>
       <data-table :items="quotes"
         show="cotizaciones/"
         :edit="false"
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {authAxios} from '@/config/axios';
+import {authAxios,errorAxios} from '@/config/axios';
 import DataTable from '@/components/table/DataTable.vue';
 import Swal from 'sweetalert2';
 import moment from 'moment';
@@ -38,11 +38,9 @@ export default {
           if (result.isConfirmed) {
             authAxios.delete('/quotes/'+id).then((res)=>{
               this.quotes = this.quotes.filter((quote)=>{
-                return quote.ID!=id;
+                return quote.No_cotizacion!=id;
              })
-            }).catch(error=>{
-              console.error(error);
-            })
+            }).catch(error=>{errorAxios.catch(this,error)})
           }
         })
 
@@ -67,9 +65,7 @@ export default {
           Opciones:quote.id
         }
       })
-    }).catch(error=>{
-      console.error(error);
-    })
+    }).catch(error=>{errorAxios.catch(this,error)})
  
   },
   methods: {

@@ -6,6 +6,7 @@
         v-model="password"
         type="password"
         placeholder="Contraseña"
+        label="Contraseña"
       />
 
       <va-input
@@ -13,6 +14,7 @@
         v-model="password_confirmation"
         type="password"
         placeholder="Confirmar Contraseña"
+        label="Confirmar Contraseña"
       />
 
         <div class="auth-layout__options d-flex align--center justify--space-between">
@@ -25,9 +27,7 @@
 </template>
 
 <script>
-  import clienteAxios from '@/config/axios';
-  import {print_error_validate,error_500} from '@/helpers';
-
+  import clienteAxios,{errorAxios} from '@/config/axios';
 export default {
   name: 'cambiar-password',
   data () {
@@ -69,16 +69,7 @@ export default {
    
    
         
-      }).catch((error)=>{
-
-           if(error.response.status==422){
-              print_error_validate(error,this);
-              return;
-            }
-
-            error_500(this);
-             
-        })
+      }).catch(error=>{errorAxios.catch(this,error)})
 
     
 

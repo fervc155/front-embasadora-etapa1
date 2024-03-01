@@ -31,11 +31,10 @@
       </div>
 
 
-      <h2>Selecciona un Clourser</h2>
+      <h2>Selecciona un Clouser</h2>
       <div class="row">
         
-      <va-select class="flex md6" 
-      label="Selecciona un clouser" v-model="clouser" :options="clousers" />
+      <SelectClouser class="flex md6" @clouser="clouser=$event"/>
       </div>
 
       <va-button @click="submit()">Guardar</va-button>
@@ -47,14 +46,13 @@
 
 <script>
 
-import {authAxios} from '@/config/axios';
+import {authAxios,errorAxios} from '@/config/axios';
 import {for_select} from '@/helpers';
 import Create from '@/pages/admin/etapa1/clients/Create.vue';
-import {print_error_validate,error_500} from '@/helpers';
-
+import SelectClouser from '@/pages/admin/users/SelectClouser';
 export default {
   name: 'potential',
-  components:{Create}, 
+  components:{Create,SelectClouser}, 
   data () {
     return {
       clients:[],
@@ -76,26 +74,14 @@ mounted () {
       res = res.data.data;
       res.answers = JSON.parse(res.answers);
       this.answer=res;
-    }).catch(error=>{
-      console.error(error);
-    })
+    }).catch(error=>{errorAxios.catch(this,error)})
 
   authAxios.get('/clients').then((res)=>{
     this.clients= for_select(res.data.data);
     
-    }).catch(error=>{
-      console.error(error);
-    })
+    }).catch(error=>{errorAxios.catch(this,error)})
 
-    authAxios.get('/users/role/clouser').then((res)=>{
-      this.clousers = [
-        ...this.clousers,
-        ...for_select(res.data.data)
-      ];
-
-    }).catch(error=>{
-      console.error(error);
-    })
+ 
  
   }, 
   methods: {
@@ -107,15 +93,8 @@ mounted () {
       }
 
       authAxios.put('/answers/'+this.answer.id+"/status",params).then((res)=>{
-        return this.$router.push({ name: 'cuestionarios' })
-      }).catch((error)=>{
-        if(error.response.status==422){
-          print_error_validate(error,this);
-          return;
-        }
-        error_500(this);
-
-      })
+        return this.$router.push({ name: 'crear-cita', params:{client_id:this.client.id} })
+      }).catch(error=>{errorAxios.catch(this,error)})
 
 
     },

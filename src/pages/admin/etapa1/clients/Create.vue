@@ -15,9 +15,8 @@
 </template>
 <script>
 
-import {authAxios} from '@/config/axios';
+import {authAxios,errorAxios} from '@/config/axios';
 import Swal from 'sweetalert2';
-import {print_error_validate,error_500} from '@/helpers';
 import FormClient from '@/pages/admin/etapa1/clients/FormClient.vue';
 export default {
   name: 'create',
@@ -64,6 +63,11 @@ export default {
     }
 
   },
+  watch:{
+    answer(val){
+      this.$emit('active',val);
+    }
+  },
   methods: {
 
     submit(){
@@ -86,14 +90,7 @@ export default {
                 this.$emit('new-user',res.data.data);
               }
         
-            }).catch((error)=>{
-              if(error.response.status==422){
-                print_error_validate(error,this);
-                return;
-              }
-
-              error_500(this);
-              })
+            }).catch(error=>{errorAxios.catch(this,error)})
           }
         })  
       } 

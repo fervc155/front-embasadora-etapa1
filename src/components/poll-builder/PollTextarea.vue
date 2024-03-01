@@ -1,5 +1,5 @@
 <template>
-  <va-input  v-if="!show"  :input="onchange()" v-model="answer" class="mb-4 border-gray" :label="data.label" placeholder="..." type="textarea" autosize/>
+  <va-input  v-if="!show"  :input="onchange()" v-model="answer" class="mb-4" :label="data.label" placeholder="..." type="textarea" autosize/>
 
   <poll-answer v-if="show" :data="data"></poll-answer>
 

@@ -102,6 +102,30 @@ const routes: Array<RouteRecordRaw> = [
         },
 
       {
+        name: 'citas',
+        path: 'citas',
+        meta:{auth:['hostess','clouser','senior']},
+        component: () => import('@/pages/admin/etapa1/appointments/Appointments.vue'),
+      },
+        {
+          name: 'crear-cita',
+          path: 'citas/crear/:client_id?',
+          meta:{auth:['hostess','senior','clouser']},
+          component: () => import('@/pages/admin/etapa1/appointments/Create.vue'),
+        },        
+         {
+          name: 'ver-cita',
+          path: 'citas/:id',
+          meta:{auth:['hostess','senior','clouser']},
+          component: () => import('@/pages/admin/etapa1/appointments/Show.vue'),
+        },    
+      {
+        name: 'primer-reporte',
+        path: 'primer-reporte/',
+        meta:{auth:['hostess','senior','clouser']},
+        component: () => import('@/pages/admin/etapa1/reports/Show.vue'),
+      },    
+      {
           name: 'usuarios',
           path: 'usuarios',
         meta:{auth:['senior']},
@@ -196,7 +220,7 @@ router.beforeEach((to, from, next) => {
  let requireAuth:any = to.meta.auth || false;
  let tokenData:any = Token.check();
  let user:any = false;
-
+ 
   if(tokenData){
     user = tokenData.user;
    store.commit('setTokenDataMutation',tokenData)

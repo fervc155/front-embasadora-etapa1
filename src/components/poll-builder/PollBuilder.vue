@@ -1,5 +1,5 @@
 <template>
-  <poll-loop :show="show" :edit="edit"  v-bind:questions="questions" />    
+  <poll-loop :show="show" :edit="edit"  @prev="changeDisplay($event)" @next="changeDisplay($event)" :display="display" v-bind:questions="questions" />    
 
   
 </template>
@@ -16,10 +16,13 @@ export default {
   },
   data () {
     return {
-
+      display:0,
     }
   },
   methods: {
+    changeDisplay(e){
+      this.display=e;
+    }
 
   }
 }

@@ -1,5 +1,5 @@
 <template>
-   <va-select  class="mb-1 border-gray"
+   <va-select  class="mb-1"
    v-if="!show" 
       :name="data.key"
       :options="data.options"

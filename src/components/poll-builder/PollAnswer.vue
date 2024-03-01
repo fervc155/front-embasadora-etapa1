@@ -1,7 +1,7 @@
 <template>
   <div  v-if="data.answer!=null">
-    <p class="lead">{{data.label}}</p>
-    <p>R= {{data.answer}}</p>
+    <p class="question">{{data.label}}</p>
+    <p class="answer">R= {{data.answer}}</p>
   </div>
 
 </template>
@@ -21,7 +21,9 @@ export default {
 </script>
 
 <style>
-  .border-gray{
-    border:1px solid #b7b7b7 !important;
-  }	
+  .question{
+    color: var(--va-primary);
+    font-weight: bold;
+    font-size: 18px;
+  }
 </style>

@@ -1,40 +1,43 @@
-import jwt_decode from "jwt-decode";
-import { useStore } from 'vuex'
-const $store = useStore();
+import jwt from "jsonwebtoken";
 
 class Token {
+   
+   	public key:any = process.env.VUE_APP_JWT_TOKEN;
 
-
-	public get(){
+	get(){
 		return localStorage.getItem('token') || false
 	}
 
-	public json():any{
-		return jwt_decode(localStorage.getItem('token')||'') || false;
+	json(){
+		return this.decode(localStorage.getItem('token')||'') || false;
 	}
-	public decode(token:string):any{
-		return jwt_decode(token) || false;
+	decode(token:any){
+		try{
+		   return (jwt.verify(token,this.key) as any) || false;
+		}
+		catch(e){
+			console.log(e);
+			return false;
+		}
 	}
 
-	public set(token:string){
+	set(token:any){
 		return localStorage.setItem('token', token);
 	}
 
-	public check(){
+	check(){
 		let token = this.get();
 
 		if(!token)
 			return false;
 
 		let response = this.decode(token);
+		console.log('decode',response);
 
 		if(!response){
 			this.destroy();
 			return false;
 		}
-
-
-
 
 	    if (response.exp <= (new Date().getTime() ) / 1000) 
 	    {
@@ -46,11 +49,11 @@ class Token {
 
 	}
 
-	public destroy(){
+	destroy(){
 		return localStorage.removeItem('token')
 	}
 
 
 }
 
-export default  (new Token) ;
+export default  (new Token()) ;

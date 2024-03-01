@@ -8,7 +8,7 @@
         placeholder="Email"
         :error="!!emailErrors.length"
         :error-messages="emailErrors"
-        :label="emailLabel"
+        label="Email"
       />
         <div class="auth-layout__options d-flex align--center justify--space-between">
       <router-link class="ml-1 link" :to="{name: 'login'}">Ir a Iniciar Sesion</router-link>
@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import clienteAxios from '@/config/axios';
+  import clienteAxios,{errorAxios} from '@/config/axios';
 
 export default {
   name: 'recover-password',
@@ -57,18 +57,8 @@ export default {
             });
           
         
-      }).catch(error=>{
-          this.$vaToast.init({
-                message: 'Tus claves de acceso son incorrectas',
-                iconClass: 'fas fa-times',
-                position: 'top-right',
-                duration: 2500,
-                fullWidth: true,
-                color:'danger',
-          });
-        })
+      }).catch(error=>{errorAxios.catch(this,error)})
 
-    
 
       }
     },

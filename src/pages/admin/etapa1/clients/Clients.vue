@@ -1,8 +1,8 @@
 <template>
   <va-card>
-    <va-card-title>Clientes</va-card-title>
+    <va-card-title>Clientes <va-chip v-if="CanI('clients.create')" class="mb-2 mr-2" to="clientes/crear" color="primary">Crear cliente</va-chip></va-card-title>
     <va-card-content>
-      <va-chip v-if="CanI('clients.create')" class="mb-2 mr-2" to="clientes/crear" color="primary">Crear cliente</va-chip>
+      
       <data-table :items="clients"
         show="clientes/"
         :edit="CanI('clients.edit','clientes/editar/')"
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import {authAxios} from '@/config/axios';
+import {authAxios,errorAxios} from '@/config/axios';
 import DataTable from '@/components/table/DataTable.vue';
 import Swal from 'sweetalert2';
 import {CanI} from '@/config/capabilities';
@@ -44,9 +44,7 @@ export default {
               this.clients = this.clients.filter((client)=>{
                 return client.No_cliente!=id;
              })
-            }).catch(error=>{
-              console.error(error);
-            })
+            }).catch(error=>{errorAxios.catch(this,error)})
           }
         })   
       }
@@ -65,9 +63,7 @@ export default {
 
         }
       });
-    }).catch(error=>{
-      console.error(error);
-    })
+    }).catch(error=>{errorAxios.catch(this,error)})
 
   },
   methods: {

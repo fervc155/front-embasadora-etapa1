@@ -15,12 +15,10 @@
 </template>
 
 <script>
-import {authAxios} from '@/config/axios';
+import {authAxios,errorAxios} from '@/config/axios';
 import FormClient from '@/pages/admin/etapa1/clients/FormClient.vue';
 import Swal from 'sweetalert2';
 
-
-import {print_error_validate, error_500} from '@/helpers';
 
 export default {
   name: 'edit',
@@ -46,9 +44,7 @@ export default {
       this.client= client;
 
     
-    }).catch(error=>{
-      console.error(error);
-    })
+    }).catch(error=>{errorAxios.catch(this,error)})
 
   },
   methods: {
@@ -67,15 +63,7 @@ export default {
             authAxios.put('/clients/'+this.client.id,client).then((res)=>{
               return this.$router.push({ name: 'clientes' })
         
-            }).catch((error)=>{
-              if(error.response.status==422){
-                print_error_validate(error,this);
-                return;
-              }
-
-               error_500(this);
-          
-        })  
+            }).catch(error=>{errorAxios.catch(this,error)})
       } 
     })
 

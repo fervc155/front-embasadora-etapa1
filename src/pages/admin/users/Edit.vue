@@ -21,12 +21,11 @@
 </template>
 
 <script>
-import {authAxios} from '@/config/axios';
-import {print_error_validate,error_500} from '@/helpers';
+import {authAxios,errorAxios} from '@/config/axios';
 
 import FormUser from './FormUser.vue';
 import ChangePassword from './ChangePassword.vue';
- import Swal from 'sweetalert2';
+import Swal from 'sweetalert2';
 
          
 export default {
@@ -51,9 +50,7 @@ export default {
         user.role = res.data.data.roles[0].name;
         delete user.roles;
         this.user = user;
-      }).catch((error)=>{
-        console.error(error);
-      })
+      }).catch(error=>{errorAxios.catch(this,error)})
 
   },
   methods: {
@@ -68,14 +65,7 @@ export default {
                   'Datos editados correctamente',
                   'success'
                 )
-      }).catch((error)=>{
-        if(error.response.status==422){
-          print_error_validate(error,this);
-          return;
-        }
-        error_500(this);
-
-      })
+      }).catch(error=>{errorAxios.catch(this,error)})
     }
 
   }

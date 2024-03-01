@@ -18,19 +18,23 @@
       </div>
     
       <va-select v-if="AmI('senior')"  label="selecciona un rol" v-model="user.role" :options="roles" />
-
-
+      
+      <SelectClouser :clouser_id="user.user_id" class="mt-3" v-if="user.role=='hostess'" @clouser="user.user_id=$event.id" />
+ 
 </template>
 
 <script>
-import {authAxios} from '@/config/axios';
+import {authAxios,errorAxios} from '@/config/axios';
 import {AmI} from  '@/config/capabilities'
+import SelectClouser from '@/pages/admin/users/SelectClouser';
+
 
 
  
 export default {
   name: 'form-user',
   props:['user','edit'],
+  components:{SelectClouser},
   data () {
     return {
       AmI:AmI,
@@ -46,9 +50,7 @@ export default {
           return role.name
         })
 
-      }).catch((error)=>{
-        console.error(error);
-      })
+      }).catch(error=>{errorAxios.catch(this,error)})
 
   },
   methods: {

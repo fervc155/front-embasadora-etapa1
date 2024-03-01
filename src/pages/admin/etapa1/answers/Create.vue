@@ -22,7 +22,7 @@
 
 <script>
 
-import {authAxios} from '@/config/axios';
+import {authAxios,errorAxios} from '@/config/axios';
 import PollBuilder from '@/components/poll-builder/PollBuilder.vue';
 import Swal from 'sweetalert2';
 
@@ -51,9 +51,7 @@ export default {
         }
       });
 
-    }).catch(error=>{
-      console.error(error);
-    })
+    }).catch(error=>{errorAxios.catch(this,error)})
  
   },
   methods: {
@@ -77,19 +75,7 @@ export default {
             authAxios.post('/answers',formData).then((res)=>{
               return this.$router.push({ name: 'cuestionarios' })
         
-            }).catch((error)=>{
-              error = (error.response.data);
-
-              console.log(error);
-               this.$vaToast.init({
-                      message: 'No se puede procesar tu peticion',
-                      iconClass: 'fas fa-times',
-                      position: 'top-right',
-                      duration: 2500,
-                      fullWidth: true,
-                      color:'danger',
-                });
-              })
+            }).catch(error=>{errorAxios.catch(this,error)})
           }
         })  
       } 

@@ -1,26 +1,19 @@
 <template>
-    <va-select
-     v-if="!show"
-      v-model="answer"
-      class="mb-4"
-      :label="data.label"
-      :options="data.options"
-      :input="onchange()"
-    />
+
+  <va-input v-if="!show" type="number" v-on:change="onchange()"  v-model="answer" :label="data.label" placeholder="..." />
+
   <poll-answer v-if="show" :data="data"></poll-answer>
 
- 
-
-
 </template>
+
+
 <script>
 import PollAnswer from '@/components/poll-builder/PollAnswer.vue';
 
 export default {
-  name: "poll-select",
+  name: "poll-number",
+  components:{PollAnswer},
   props: ['data','show','edit'],
-
-   components:{PollAnswer},
   data () {
     if(this.edit)
       return {
@@ -30,6 +23,11 @@ export default {
       return {
         answer:'',
       }
+  },
+  mounted(){
+    if(!this.edit)
+      this.data.answer=this.data.answer||'-';
+    
   },
   methods: {
     onchange(){

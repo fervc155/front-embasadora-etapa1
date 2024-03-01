@@ -25,11 +25,33 @@ export default {
           name: 'cuestionarios',
           auth:['senior','hostess','clouser'],
           displayName: 'Cuestionarios',
+          meta:{
+            icon:'vuestic-iconset-forms'
+          }
         },
         {
           name: 'cotizaciones',
           auth:['senior','hostess'],
-          displayName: 'Cotizaciones',
+          displayName: 'Cotizaciones',          
+          meta:{
+            icon:'vuestic-iconset-files'
+          }
+        },        
+        {
+          name: 'citas',
+          auth:['senior','clouser','hostess'],
+          displayName: 'Citas',          
+          meta:{
+            icon:'fa fa-calendar va-icon fa fa-calendar'
+          }
+        },
+       {
+          name: 'primer-reporte',
+          auth:['senior','clouser','hostess'],
+          displayName: 'Reporte',          
+          meta:{
+            icon:'fa fa-bar-chart va-icon fa fa-bar-chart'
+          }
         },
       ],
     },
@@ -38,7 +60,7 @@ export default {
       auth:['senior','hostess','clouser'],
       displayName: 'Clientes',
       meta: {
-        icon: 'vuestic-iconset-user',
+        icon: 'fa fa-address-book-o va-icon fa fa-address-book-o',
       },
     },
     {

@@ -1,4 +1,8 @@
 <template>
+   <div class="mb-3">
+    <va-chip to="/admin/cotizaciones">Volver</va-chip>
+  </div>
+
   <va-card>
    <va-card-title>Crear cotizacion</va-card-title>
    <va-card-content>
@@ -96,16 +100,15 @@
     <va-input class="mb-4" type="textarea" autosize v-model="quote.second_footer" label="Segundo pie de pagina" />
 
 
-    <va-button @click="submit()">Crear cotizacion</va-button>
+    <va-button :loading="loading" @click="submit()">Crear cotizacion</va-button>
   </va-card-content>
 </va-card>
 </template>
 
 
 <script>
-  import {authAxios} from '@/config/axios';
+  import {authAxios,errorAxios} from '@/config/axios';
   import Swal from 'sweetalert2';
-  import {print_error_validate,error_500} from '@/helpers';
 
   import VaMediumEditor from '@/components/va-medium-editor/va-medium-editor'
 
@@ -117,6 +120,7 @@
     },
     data () {
       return {
+        loading:false,
         units:['L','ml',"Kgs",'Gr',"M","Cm","Mm",'Oz','Lbs',"In"],
         currencies:["MXN","COP","USD","EUR"],
         quote:{header:'Formulabs | RFC: SOCM741122SJ7 AV. DEL SOL MZA 3, SMZA 45, LTE 9 CANCÚNQ. ROO MÉXICO CP: 77506',
@@ -131,7 +135,7 @@
         content:[],
 
       },
-      new_product:{name:'',count:1,total:"",price:"",iva:16,ingredientes:'',unit:'',unit_amount:''},
+      new_product:{name:'',count:1,price:"",iva:16,ingredients:'',unit:'',unit_amount:''},
       product:{},
 
       editor:{},
@@ -150,9 +154,7 @@
         this.quote.client_name = answers.group_information.content.name.answer;
         this.quote.email = answers.group_information.content.email.answer;
         this.quote.phone = answers.group_information.content.phone.answer;
-      }).catch(error=>{
-        console.log(error)
-      })
+      }).catch(error=>{errorAxios.catch(this,error)})
     }
 
   },
@@ -178,9 +180,18 @@
   methods: {
 
     addProduct(){
-      if(this.product.name.trim().length>1 &&
-       this.product.count>0
-       && this.product.price>0){
+      let isValid=true;
+
+      for(let k in this.product){
+        if(k=='iva'){
+          continue;
+        }
+        if(this.product[k].toString().trim()=="" || this.product[k].toString().trim()=="0"){
+          console.log(this.product[k],k)
+          isValid=false;
+        }
+      }
+      if(isValid){
         this.product.total = this.product.price * this.product.count;
 
       let find=false;
@@ -216,19 +227,14 @@
   },
 
   submit(){
+    this.loading=true;
     let quote = JSON.parse(JSON.stringify(this.quote))
     quote.content = JSON.stringify(quote.content);
     console.log(quote)
     authAxios.post('/quotes',quote).then((res)=>{
       return this.$router.push({ name: 'cotizaciones' })
-    }).catch((error)=>{
-      if(error.response.status==422){
-        print_error_validate(error,this);
-        return;
-      }
-      error_500(this);
-
-    })
+      this.loading=false;
+    }).catch(error=>{errorAxios.catch(this,error)})
   }
 
 },

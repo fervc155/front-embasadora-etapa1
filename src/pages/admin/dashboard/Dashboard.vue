@@ -1,5 +1,7 @@
 <template>
-  <va-card>
+
+  <tabs @active="active=$event" :tabs="tabs" />
+  <va-card v-if="active==tabs[0]">
     <va-card-title>Cuestionarios sin revisar</va-card-title>
     <va-card-content>
 
@@ -15,14 +17,12 @@
     
      
   </va-card>
-
-
-  <va-card>
-    <va-card-title>Entrevistas sin closer asignado</va-card-title>
+  <va-card v-if="active==tabs[1]">
+    <va-card-title>Citas para hoy</va-card-title>
       <va-card-content>
 
-      <data-table :items="answersPotencial"
-        show="cuestionarios/"
+      <data-table :items="citas"
+        show="citas/"
         :edit="false"
         :drop="false"
       ></data-table>
@@ -35,34 +35,45 @@
 </template>
 
 <script>
-import {authAxios} from '@/config/axios';
+import {authAxios,appointmentsApi,errorAxios} from '@/api/index';
 import DataTable from '@/components/table/DataTable.vue';
 import Swal from 'sweetalert2';
-
+import Tabs from '@/components/Tabs.vue';
 import {answers_map} from'@/pages/admin/etapa1/answers/_helpers';
+import {AmI} from  '@/config/capabilities'
 
 export default {
   name: 'dashboard',
-  components:{DataTable},
+  components:{DataTable,Tabs},
   data () {
+    let tabs =['Cuestionarios sin revisar','Citas para hoy'];
+    let active ='Cuestionarios sin revisar';
+    if(AmI('clouser')){
+      delete tabs[0];
+      active = tabs[1];
+
+    }
     return {
+      tabs,
+      active,
       answers:[],
-      answersPotencial:[],
+      citas:[],
 
     }
   },
   mounted () {
-    authAxios.get('/answers/status/1').then((res)=>{
-      this.answers=answers_map(res.data.data);
-    }).catch(error=>{
-      console.error(error);
-    })
+
+    if(!AmI('clouser')){
+
+      authAxios.get('/answers/status/1').then((res)=>{
+        this.answers=answers_map(res.data.data);
+      }).catch(error=>{errorAxios.catch(this,error) })
+   
+    }
+   appointmentsApi.today().then((res)=>{
+      this.citas=appointmentsApi.map(res);
+    }).catch(error=>{errorAxios.catch(this,error) })
  
-   authAxios.get('/answers/status/3/0').then((res)=>{
-      this.answersPotencial=answers_map(res.data.data);
-    }).catch(error=>{
-      console.error(error);
-    })
  
 
   },

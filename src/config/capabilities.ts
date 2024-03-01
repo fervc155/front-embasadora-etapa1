@@ -3,7 +3,7 @@ import Token from '@/config/token';
 let capabilities:any={
 	answers:{
 		create:['hostess','senior'],
-		edit  :['senior'],
+		edit  :['senior','hostess'],
 		delete:['hostess','senior'],
 	},
 	clients:{
@@ -19,7 +19,13 @@ let capabilities:any={
 		create:['hostess','clouser','senior'],
 		edit  :['hostess','clouser','senior'],
 		delete:['senior'],
-	}
+	},
+	appointments:{
+		create:['hostess','clouser','senior'],
+		edit  :['hostess','clouser','senior'],
+		delete:['senior','clouser','hostess'],
+	},
+
 }
 
 export function CanI(capability:string,response:any=true){
@@ -32,6 +38,8 @@ export function CanI(capability:string,response:any=true){
 	return false;
 
 }
+
+export const I= Token.json().user;
 
 export function AmI(role:string){
 	return Token.json().user.role==role;

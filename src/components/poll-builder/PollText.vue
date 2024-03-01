@@ -1,6 +1,6 @@
 <template>
 
-  <va-input v-if="!show" v-on:change="onchange()"  v-model="answer" class="border-gray" :label="data.label" placeholder="..." />
+  <va-input v-if="!show" v-on:change="onchange()"  v-model="answer" :label="data.label" placeholder="..." />
 
   <poll-answer v-if="show" :data="data"></poll-answer>
 

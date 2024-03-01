@@ -7,6 +7,7 @@
     <va-card-content>
 
       <form-user v-bind:user="user" />
+
       <va-button size="medium"  class="mt-4" v-on:click="submit()" >Crear usuario</va-button>
 
     </va-card-content>
@@ -14,10 +15,9 @@
 </template>
 
 <script>
-import {authAxios} from '@/config/axios';
-import {print_error_validate,error_500} from '@/helpers';
+import {authAxios,errorAxios,usersApi} from '@/api/index';
 import FormUser from './FormUser.vue';
- 
+
 export default {
   name: 'create',
   components:{FormUser},
@@ -43,16 +43,9 @@ export default {
 
       let formData = new FormData();
 
-      authAxios.post('/users',this.user).then((res)=>{
+      usersApi.save(this.user).then((res)=>{
         return this.$router.push({ name: 'usuarios' })
-      }).catch((error)=>{
-        if(error.response.status==422){
-          print_error_validate(error,this);
-          return;
-        }
-        error_500(this);
-
-      })
+      }).catch(error=>{errorAxios.catch(this,error)})
     }
 
   }

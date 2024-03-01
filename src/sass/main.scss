@@ -29,3 +29,35 @@ td.no-data{
 .va-card__title{
 	font-size: 0.8rem;
 }
+
+.va-chip__content{
+	color:white;
+}
+.va-sidebar-item--active *{
+	color:white !important;
+}
+
+.va-input__container{
+	border-color: #b9b9b9 !important;
+}
+.va-input-wrapper__content{
+	border:none !important;
+}
+
+a .fa-trash,
+td .fa-trash{
+	color:var(--va-danger);
+}
+a .fa-pencil{
+	color: var(--va-info);
+}
+
+.va-card__title {
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+}
+
+  .color-white{
+    color: white !important;
+  }

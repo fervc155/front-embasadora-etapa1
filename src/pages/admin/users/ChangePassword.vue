@@ -25,8 +25,7 @@
 </template>
 
 <script>
-import {authAxios} from '@/config/axios';
-import {print_error_validate,error_500} from '@/helpers';
+import {authAxios,errorAxios} from '@/config/axios';
 import {AmI} from  '@/config/capabilities'
 import Swal from 'sweetalert2';
  
@@ -68,14 +67,7 @@ export default {
          this,password='';
          this,password_confirmation='';
          this,old_password='';
-      }).catch((error)=>{
-        if(error.response.status==422){
-          print_error_validate(error,this);
-          return;
-        }
-        error_500(this);
-
-      })
+      }).catch(error=>{errorAxios.catch(this,error)})
     }
 
   }

@@ -1,5 +1,13 @@
 <template>
-  <va-card>
+  <div class="mb-3">
+    <va-chip to="/admin/cotizaciones">Volver</va-chip>
+  </div>
+
+    <tabs @active="active=$event" :tabs="tabs" />
+
+
+
+  <va-card v-if="active==tabs[3]">
     <va-card-title>Estatus</va-card-title>
     <va-card-content>
       <va-slider
@@ -11,12 +19,11 @@
 
       <h2>Estatus actual: {{currentStatus}}</h2>
 
-      <div v-if="this.quote.quote_status_id<5">
+      <div v-if="this.quote.quote_status_id<5" class="align-center">
 
-        <p>Siguiente status: {{nextStatusLegend}} </p>
-        <va-button @click="nextStatus()">Siguiente status</va-button>
-        <va-button color="success" @click="complete()">Aprobada</va-button>
-        <va-button color="danger" @click="cancell()">Cancelar</va-button>
+        <va-button  @click="nextStatus()">Siguiente status</va-button>
+        <va-button class="mx-3" color="info" @click="complete()">Aprobada</va-button>
+        <va-button  color="danger" @click="cancell()">Cancelar</va-button>
       </div>
 
 
@@ -25,7 +32,7 @@
 
   </va-card>
 
-  <va-card  v-if="this.quote.quote_status_id==6 && this.quote.client_id==null">
+  <va-card  v-if="active==tabs[3] && this.quote.quote_status_id==6 && this.quote.client_id==null">
     <va-card-title>Seleccionar cliente</va-card-title>
     <va-card-content>       
       <div class="row">
@@ -55,21 +62,52 @@
 </va-card-content>
 </va-card>
 
-<card-information v-if="quote.client!=null" :client="quote.client" />
-
-
-<va-card>
+<card-client v-if="active==tabs[2] && quote.client!=null" :client="quote.client" />
+ 
+<va-card  v-if="active==tabs[0]">
  <va-card-title>Informacion de la cotizacion</va-card-title>
  <va-card-content>
 
-   {{quote.client_name}}
-   {{quote.title}}
-   {{quote.start_validity}}
-   {{quote.end_validity}}
-   {{quote.email}}
-   {{quote.phone}}
 
-   <div class="va-table-responsive  mb-5">
+  <div class="container pl-2 mb-3">
+    
+
+  <div class="row mb-2">
+    <span class="subtitle"><va-icon name="fa fa-user-o va-icon fa fa-user-o"/> Cliente</span>
+    <span>{{quote.client_name}}</span>
+  </div>      
+  <div class="row mb-2">
+    <span class="subtitle"><va-icon name="fa fa-envelope-o va-icon fa fa-envelope-o"/> Email</span>
+    <span> {{quote.email}}</span>
+  </div>      
+  <div class="row mb-2">
+    <span class="subtitle"><va-icon name="fa fa-phone va-icon fa fa-phone"/> Phone</span>
+    <span> {{quote.phone}}</span>
+  </div>      
+  <div class="row mb-2">
+    <span class="subtitle"><va-icon name="fa fa-file-text-o va-icon fa fa-file-text-o"/> Titulo</span>
+    <span> {{quote.title}}</span>
+  </div>      
+  <div class="row mb-2">
+    <span class="subtitle"><va-icon name="fa fa-calendar-times-o va-icon fa fa-calendar-times-o"/> Validez</span>
+    <span> {{quote.start_validity}} -
+    {{quote.end_validity}}</span>
+  </div>
+
+
+  </div>
+</va-card-content>
+</va-card>
+
+
+<va-card  v-if="active==tabs[1]">
+ <va-card-title>Productos</va-card-title>
+ <va-card-content>
+
+
+
+
+  <div class="va-table-responsive  mb-5">
     <table class="va-table w-100">
       <thead>
         <tr>
@@ -106,24 +144,27 @@
 
 
 <script>
-  import {authAxios} from '@/config/axios';
+  import {authAxios,errorAxios} from '@/config/axios';
   import Swal from 'sweetalert2';
-  import {print_error_validate,error_500} from '@/helpers';
   import Create from '@/pages/admin/etapa1/clients/Create.vue';
   import {for_select} from '@/helpers';
-  import CardInformation from '@/pages/admin/etapa1/clients/CardInformation.vue';
+  import CardClient from '@/pages/admin/etapa1/clients/CardClient.vue';
+  import Tabs from '@/components/Tabs.vue';
+
 
 
   export default {
     name: 'show',
     components: {
       Create,
-      CardInformation
-
+      CardClient,
+      Tabs
     },
     data () {
       return {
-        quote:{status:{name:''},content:[]},
+        tabs:['Informacion','Productos','Cliente','Estatus'],
+        active:'Informacion',
+        quote:{answer:{},status:{name:''},content:[]},
         currentStatus:'',
         clients:[],
         client:{id:-1},
@@ -136,9 +177,10 @@
        let quote = res.data.data;
        quote.content = JSON.parse(quote.content);
 
-       let answer = quote.answer;
-       answer.answers = JSON.parse(answer.answers);
-       quote.answer= answer;
+       if(quote.answer){    
+         let answers = JSON.parse(quote.answer.answers);
+         quote.answer= {answers};
+       }
 
        this.currentStatus=quote.status.name;
        this.quote = quote;
@@ -146,10 +188,7 @@
        this.getClients();
 
 
-     }).catch(error=>{
-      console.error(error);
-    })
-
+     }).catch(error=>{errorAxios.catch(this,error)})
 
 
    },
@@ -212,8 +251,7 @@
      if(this.quote.quote_status_id==6 && this.quote.client_id==null){
       authAxios.get('clients').then((res)=>{
         this.clients= for_select(res.data.data);
-        console.log(this.clients);
-      })
+      }).catch(error=>{errorAxios.catch(this,error)})
     }
   },
   nextStatus(){
@@ -229,11 +267,8 @@
       authAxios.post('/quotes/'+this.quote.id+'/status/'+next).then((res)=>{
         this.quote = res.data.data;
         this.currentStatus=this.quote.status.name;
-
         Swal.fire('Exito','Status cambiado correctamente','success');
-      }).catch(error=>{
-        console.error(error);
-      })
+      }).catch(error=>{errorAxios.catch(this,error)})
     }
   })
 },
@@ -248,15 +283,13 @@ complete(){
 
     let next ='6';
     authAxios.post('/quotes/'+this.quote.id+'/status/'+next).then((res)=>{
-      this.quote = res.data.data;
+      this.quote.quote_status_id = res.data.data.quote_status_id;
       this.currentStatus=this.quote.status.name;
 
       this.getClients();
 
       Swal.fire('Exito','Status cambiado correctamente','success');
-    }).catch(error=>{
-      console.error(error);
-    })
+    }).catch(error=>{errorAxios.catch(this,error)})
   }
 })
 },
@@ -275,9 +308,7 @@ cancell(){
       this.currentStatus=this.quote.status.name;
 
       Swal.fire('Exito','Status cambiado correctamente','success');
-    }).catch(error=>{
-      console.error(error);
-    })
+    }).catch(error=>{errorAxios.catch(this,error)})
   }
 })
 },
@@ -304,10 +335,10 @@ setClient(){
     authAxios.put('/quotes/'+this.quote.id,data).then((res)=>{
       this.quote = res.data.data;
       Swal.fire('Exito','Cliente asignado correctamente','success');
+      return this.$router.push({ name: 'crear-cita', params:{client_id:this.client.id} })
 
-    }).catch(error=>{
-      console.error(error);
-    })
+
+    }).catch(error=>{errorAxios.catch(this,error)})
   }
 }
 
@@ -324,8 +355,21 @@ setClient(){
   .va-slider--disabled{
     opacity: 1 !important;
   }
-    .total{
+  .total{
     font-size: 30px;
     font-weight: bold;
+  }
+
+  .align-center{
+    text-align: center;
+  }
+  .subtitle i{
+    font-size: 20px !important;
+    width: 30px;
+  }
+  .subtitle{
+    font-weight: bold;
+    display: block;
+    width: 120px;
   }
 </style>

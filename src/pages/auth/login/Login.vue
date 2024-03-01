@@ -8,7 +8,7 @@
       placeholder="Email"
       :error="!!emailErrors.length"
       :error-messages="emailErrors"
-      :label="emailLabel"
+      label="Email"
     />
 
     <va-input
@@ -19,7 +19,7 @@
       :error="!!passwordErrors.length"
       :error-messages="passwordErrors"
       v-on:keyup.enter="onsubmit()"
-      :label="passwordLabel"
+      label="Password"
 
     />
 
@@ -29,7 +29,7 @@
 
     <div class="d-flex justify--center mt-3">
 
-      <va-button :loading="loading" :rounded="false"@click="onsubmit()" class="my-0">Iniciar sesion</va-button>
+      <va-button :loading="loading" :rounded="false" @click="onsubmit()" class="my-0">Iniciar sesion</va-button>
 
     </div>
   </form>
@@ -37,7 +37,7 @@
 
 
 <script>
-import clienteAxios from '@/config/axios';
+import clienteAxios,{errorAxios} from '@/config/axios';
 import Token from '@/config/token';
 import {useStore} from "vuex";
 
@@ -87,22 +87,10 @@ export default {
       clienteAxios.post('/auth/login',formData).then(res=>{
         let data = res.data.data;
         Token.set(data);
-        this.$router.push({name:'dashboard'})
+        window.location = '/';
         
-      }).catch(error=>{
-          this.loading=false;
-          this.$vaToast.init({
-                message: 'Tus claves de acceso son incorrectas',
-                iconClass: 'fas fa-times',
-                position: 'top-right',
-                duration: 2500,
-                fullWidth: true,
-                color:'danger',
-          });
-          error = (error.response.data);
-          this.emailErrors = error.errors.email;
-          this.passwordErrors = error.errors.password;
-        })
+      }).catch(error=>{errorAxios.catch(this,error)})
+ 
 
     },
   },

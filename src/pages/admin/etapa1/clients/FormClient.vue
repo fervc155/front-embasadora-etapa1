@@ -2,34 +2,34 @@
     <h3>Informacion general</h3>
 
     <div class="row">
-      <div class="flex md6 ">
+      <div class="flex md6 input ">
         <va-input  v-model="client.name" type="text" label="Nombre"/>
       </div>
 
-      <div class="flex md6 ">     
+      <div class="flex md6 input ">     
         <va-input type="email" v-model="client.email"  label="Email"/>
       </div>
 
-      <div class="flex md6 ">     
+      <div class="flex md6 input ">     
         <va-input type="number" v-model="client.whatsapp"  label="Whatsapp"/>
       </div>
 
-      <div class="flex md6 ">     
+      <div class="flex md6 input ">     
         <va-input  type="number" v-model="client.phone"  label="Telefono"/>
       </div>
-      <div class="flex md6 ">     
+      <div class="flex md6 input ">     
         <va-input v-model="client.company"  label="Empresa"/>
       </div>
     </div>
     <h3>Redes sociales</h3>
     <div class="row" >
-      <div class="flex md5">     
+      <div class="flex md5 input">     
         <va-input  type="text" v-model="key"  label="Red social"/>
       </div>
-        <div class="flex md5">     
+        <div class="flex md5 input">     
         <va-input  type="text"  v-model="value" label="Link"/>
       </div>
-      <div class="flex md2">
+      <div class="flex md2 input">
         <va-button :disabled="key.length<1 || value.length<1" @click="addSocialNetwork()">Agregar</va-button>
       </div>
     </div>
@@ -91,5 +91,9 @@ export default {
 </script>
 
 <style>
+
+  .input{
+    padding: 5px;
+  }
 
 </style>
